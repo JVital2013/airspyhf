@@ -804,6 +804,13 @@ static void airspyhf_open_device(airspyhf_device_t* device,
 		return;
 	}
 
+	/* WinUSB: Use RAW_IO to improve throughput */
+//#if LIBUSB_API_VERSION >= 0x0100010B
+	if(libusb_endpoint_supports_raw_io(dev_handle, LIBUSB_ENDPOINT_IN | AIRSPYHF_ENDPOINT_IN) == 1) {
+		libusb_endpoint_set_raw_io(dev_handle, LIBUSB_ENDPOINT_IN | AIRSPYHF_ENDPOINT_IN, 1);
+	}
+//#endif
+
 	*ret = AIRSPYHF_SUCCESS;
 	return;
 }
